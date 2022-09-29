@@ -1,0 +1,41 @@
+version: '3'
+services:
+    nginx:
+        build:
+            context: ./
+            dockerfile: Dockerfile.nginx
+        container_name: nginx
+        networks:
+            - digitaltechnologia
+        ports:
+            - 4000:80
+            - 443:443
+        volumes:
+            - ./wordpress/:/usr/share/nginx/html
+        depends_on:
+            - php
+            - mysql
+    mysql:
+        image: 'mysql:8.0.30'
+        restart: always
+        container_name: mysql
+        networks:
+            - digitaltechnologia
+        volumes:
+            - ./mysql/:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    php:
+        build:
+            context: ./
+            dockerfile: Dockerfile.php
+        container_name: php
+        networks:
+            - digitaltechnologia
+        volumes:
+            - ./wordpress/:/usr/share/nginx/html
+            - ./logs/xdebug.log:/var/log/xdebug.log
+networks:
+    digitaltechnologia:
+        driver: bridge

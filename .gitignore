@@ -1,0 +1,10 @@
+.env
+.git
+.next
+yarn-error.log
+logs
+out
+build
+build
+mysql
+node_modules

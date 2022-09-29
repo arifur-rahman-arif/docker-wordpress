@@ -1,0 +1,11 @@
+.vscode
+.idea
+.env*
+.gitignore
+.gitlab-ci.yml
+Makefile
+docker-compose*
+node_modules
+shell-scripts
+build
+
