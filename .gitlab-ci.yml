@@ -1,0 +1,60 @@
+# Define all the CI variables
+
+.ssh_login: &ssh_login
+    before_script:
+        - 'which ssh-agent || ( apk update && apk add openssh-client )'
+        - eval $(ssh-agent -s)
+        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        - ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
+        - chmod 644 ~/.ssh/known_hosts
+
+.docker_configuration: &docker_configuration
+    stage: Build
+    image: docker:22.06.0-beta.0-dind-alpine3.16
+    # image: docker
+    # rules:
+    #     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "production"
+    #     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+    when: always
+    services:
+        - docker:22.06.0-beta.0-dind-alpine3.16
+
+# Defining all the stages of this pipeline
+stages:
+    - Test
+    - Build
+    - Staging
+    - Deploy
+
+# Building the theme for feature/bug/hotfix
+Build:
+    <<: *docker_configuration
+    script:
+        - chmod +x ./shell-scripts/build-containers.sh
+        - ./shell-scripts/build-containers.sh
+
+# Deploy the theme pm the staging environment
+Deploy Feature/Bug/Hotfix:
+    stage: Deploy
+    image: alpine:3.16
+    <<: *ssh_login
+    script:
+        - ssh $SERVER_USER@$SERVER_IP "docker ps -aq | xargs docker stop | xargs docker rm || true"
+        - ssh $SERVER_USER@$SERVER_IP "docker system prune -af --volumes"
+        - ssh $SERVER_USER@$SERVER_IP "echo "$DOCKER_DEPLOY_TOKEN" | docker login -u $DOCKER_DEPLOY_USER $CI_REGISTRY --password-stdin"
+        - ssh $SERVER_USER@$SERVER_IP "docker pull $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-php && docker pull $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-nginx && docker pull $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-mysql"
+        - | 
+            if [ "$RECREATE_WP_CONFIG" == "true" ]; then
+                ssh $SERVER_USER@$SERVER_IP "docker run -d -p 9000:9000 --name php $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-php"
+            else
+                ssh $SERVER_USER@$SERVER_IP "docker run -d -p 9000:9000 --mount type=bind,source=/var/www/prod-config/wp-config.php,target=/usr/share/nginx/html/wp-config.php --name php $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-php"
+            fi
+        - ssh $SERVER_USER@$SERVER_IP "docker run -d -p 3306:3306 -v /var/lib/mysql:/var/lib/mysql --env MYSQL_HOST=mysql --env MYSQL_DATABASE=$MYSQL_DATABASE --env MYSQL_USER=$MYSQL_USER --env MYSQL_PASSWORD=$MYSQL_USER_PASS --env MYSQL_ROOT_PASSWORD=$MYSQL_USER_PASS --name mysql $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-mysql"
+        - | 
+            if [ "$RECREATE_WP_CONFIG" == "true" ]; then
+                ssh $SERVER_USER@$SERVER_IP "docker run -d -p 4000:80 --name nginx $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-nginx"
+            else
+                ssh $SERVER_USER@$SERVER_IP "docker run -d -p 4000:80 --mount type=bind,source=/var/www/prod-config/wp-config.php,target=/usr/share/nginx/html/wp-config.php --name nginx $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID-nginx"
+            fi
