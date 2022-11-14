@@ -1,0 +1,10 @@
+yarn.lock
+package.json
+Dockerfile.*
+README.md
+Contributors.md
+.next/*
+public/**
+node_modules/**
+wordpress/**
+

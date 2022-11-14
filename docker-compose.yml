@@ -3,7 +3,7 @@ services:
     nginx:
         build:
             context: ./
-            dockerfile: Dockerfile.prod.nginx
+            dockerfile: Dockerfile.nginx
         container_name: nginx
         networks:
             - digitaltechnologia
@@ -23,6 +23,11 @@ services:
         container_name: mysql
         networks:
             - digitaltechnologia
+        volumes:
+            - ./mysql/:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     php:
         build:
             context: ./
@@ -30,6 +35,9 @@ services:
         container_name: php
         networks:
             - digitaltechnologia
+        volumes:
+            - ./wordpress/:/usr/share/nginx/html
+            - ./logs/xdebug.log:/var/log/xdebug.log
 networks:
     digitaltechnologia:
         driver: bridge
