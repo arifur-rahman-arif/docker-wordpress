@@ -4,7 +4,7 @@
 
 # Start the server container with new build
 start-build:
-	sudo chmod 777 -R * && sudo rm -rf wordpress/wp-config.php && sudo rm -rf mysql && sudo docker-compose -f docker-compose.yml up -d --build && mkdir mysql && sudo chmod 777 -R mysql/
+	sudo chmod 777 -R * && sudo rm -rf wordpress/wp-config.php && sudo rm -rf mysql && sudo docker-compose -f docker-compose.yml up -d --build && sudo chmod 777 -R mysql/
 
 # Start the server container
 start:
