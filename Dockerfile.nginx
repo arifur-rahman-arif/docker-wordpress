@@ -6,6 +6,8 @@ ADD ./nginx/certs /etc/nginx/certs/self-signed
 
 WORKDIR /usr/share/nginx/html
 
+RUN chmod 777 -R /usr/share/nginx/html
+
 EXPOSE 80
 
 EXPOSE 443

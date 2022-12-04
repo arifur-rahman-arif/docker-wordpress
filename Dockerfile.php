@@ -15,6 +15,8 @@ ADD php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 COPY ./wordpress/ /usr/share/nginx/html
 
+RUN chmod 777 -R /usr/share/nginx/html
+
 WORKDIR /usr/share/nginx/html
 
 RUN chown root:root -R /usr/share/nginx/html \
