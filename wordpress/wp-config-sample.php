@@ -80,6 +80,7 @@ $table_prefix = 'wp_';
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
 define( 'WP_DEBUG', false );
+define('FS_METHOD', 'direct');
 
 /* Add any custom values between this line and the "stop editing" line. */
 
