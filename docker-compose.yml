@@ -9,7 +9,6 @@ services:
             - digitaltechnologia
         ports:
             - 4000:80
-            - 443:443
         volumes:
             - ./wordpress/:/usr/share/nginx/html
         depends_on:
