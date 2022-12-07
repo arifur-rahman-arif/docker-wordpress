@@ -4,7 +4,7 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile.nginx
-        container_name: nginx
+        # container_name: nginx
         networks:
             - digitaltechnologia
         ports:
@@ -20,7 +20,7 @@ services:
             context: ./
             dockerfile: Dockerfile.sql
         restart: always
-        container_name: mysql
+        container_name: ${MYSQL_DATABASE}
         networks:
             - digitaltechnologia
         volumes:
@@ -32,7 +32,7 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile.php
-        container_name: php
+        # container_name: php
         networks:
             - digitaltechnologia
         volumes:
