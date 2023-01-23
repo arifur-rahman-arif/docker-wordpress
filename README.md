@@ -1,9 +1,5 @@
-[![Docker](https://storage.googleapis.com/static.ianlewis.org/prod/img/docker/large_v-trans.png "Docker")](https://storage.googleapis.com/static.ianlewis.org/prod/img/docker/large_v-trans.png "Docker")
-
-[![WordPress](https://1000logos.net/wp-content/uploads/2017/05/WordPress-Logo.png "WordPress")](https://1000logos.net/wp-content/uploads/2017/05/WordPress-Logo.png "WordPress") 
-
-
-# *How to start the WordPress server?*
+[![WordPress+Docker](https://banck.net/wp-content/uploads/2015/08/Wordpress_Docker.png "WordPress+Docker")](https://banck.net/wp-content/uploads/2015/08/Wordpress_Docker.png "WordPress+Docker")
+# *How to start the WordPress server with Docker?*
 
 ------------
 - If it's the very first time of running it, create a ***.env*** file in the root folder by copying the ***.env.sample*** file.
