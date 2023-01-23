@@ -4,7 +4,8 @@ RUN apk update && apk upgrade
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mysql
 
-RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
+RUN apk add --update linux-headers \ 
+    && apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
 	&& pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
