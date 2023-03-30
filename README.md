@@ -11,9 +11,7 @@
   **Mysql user:** root
   **Mysql password:** secret-password
 -  The server will start & can be accessed by **localhost:4000**
--  The **Database Host** for WordPress would be the mysql container ID.
-      > To get the container ID of mysql run ***docker ps*** command in terminal and copy the **CONTAINER ID** of **{database_name}_mysql** & paste it in WordPress **Database Host** field.
-[![Container ID](https://raw.githubusercontent.com/arifur-rahman-arif/docker-wordpress/main/images/how-to-copy-container-id.png "Container ID")](https://raw.githubusercontent.com/arifur-rahman-arif/docker-wordpress/main/images/how-to-copy-container-id.png "Container ID")
+-  The **Database Host** for WordPress would be the **MYSQL_DATABASE** environment variable value
 - Set a table prefix for the WordPress site & click Submit to create the WordPress environment
 
 ### Check the Makefile to see other available commands
