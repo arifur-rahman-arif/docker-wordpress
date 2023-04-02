@@ -14,6 +14,10 @@ RUN apk add --update linux-headers \
 
 ADD php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
+COPY ./php/php.ini /usr/local/etc/php/
+
+RUN ln -s /usr/local/etc/php/php.ini /usr/local/etc/php/conf.d/docker-php.ini
+
 COPY ./wordpress/ /usr/share/nginx/html
 
 RUN chmod 777 -R /usr/share/nginx/html

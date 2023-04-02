@@ -11,6 +11,7 @@ services:
             - 4000:80
         volumes:
             - ./wordpress/:/usr/share/nginx/html
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
         depends_on:
             - php
             - mysql
@@ -37,6 +38,7 @@ services:
         volumes:
             - ./wordpress/:/usr/share/nginx/html
             - ./logs/xdebug.log:/var/log/xdebug.log
+            - ./php/php.ini:/usr/local/etc/php/php.ini
 networks:
     digitaltechnologia:
         driver: bridge

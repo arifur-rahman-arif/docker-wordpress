@@ -10,6 +10,10 @@ start-build:
 start:
 	sudo docker-compose -f docker-compose.yml up -d && sudo chmod 777 -R mysql/
 
+# Re-start the server container
+re-start:
+	sudo docker-compose -f docker-compose.yml restart && sudo chmod 777 -R mysql/
+
 # Stop the server container
 stop:
 	sudo docker-compose -f docker-compose.yml down && sudo chmod 777 -R mysql/
