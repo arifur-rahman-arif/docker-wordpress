@@ -23,3 +23,6 @@ stop-all-container:
 
 remove-images:
 	sudo docker system prune -a --volumes
+
+
+# docker exec -it 89a8b153eb60 wp acf import /home/ar-arif/Workspace/next-js-sites/my-iclinic-client/data/acf-export.json --allow-root

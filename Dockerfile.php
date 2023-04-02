@@ -6,13 +6,11 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable pdo_mys
 
 RUN apk add --update linux-headers \ 
     && apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
-	&& pecl install xdebug \
+	&& pecl install xdebug-3.0.4 \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host = host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-	&& echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20200930/xdebug.so" >> /usr/local/etc/php/php.ini
+    && echo "xdebug.client_host = docker.for.mac.localhost" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-ADD php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 COPY ./php/php.ini /usr/local/etc/php/
 
@@ -24,10 +22,13 @@ RUN chmod 777 -R /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 
-RUN chown root:root -R /usr/share/nginx/html \
-    && chmod 777 -R /usr/share/nginx/html \
-    && chown www-data -R /var/log
+RUN chown -R www-data:www-data /usr/share/nginx/html \
+    && chmod -R 775 /usr/share/nginx/html \
+    && chown -R www-data:www-data /var/log
 
-# RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-
-# RUN chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
+# Add the wp-cli support in the container
+RUN apk add --no-cache bash \
+    && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp \
+    && wp --allow-root --version
